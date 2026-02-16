@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ROI Calculator | CMMS Savings",
-  description: "Calculate the return on investment of using a computerized maintenance management system.",
+  title: "OptiAM ROI Calculator | Predictive Maintenance Savings",
+  description: "Calculate your return on investment for OptiAM predictive maintenance software. See how much you can save by eliminating unplanned downtime and emergency repairs.",
 };
 
 export default function RootLayout({
