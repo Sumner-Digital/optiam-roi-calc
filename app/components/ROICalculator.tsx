@@ -41,7 +41,7 @@ function InputField({
   const [localValue, setLocalValue] = useState("");
 
   const sliderMin = min;
-  const sliderMax = max ?? value * 4;
+  const sliderMax = max ?? 100;
   const sliderStep = step ?? (sliderMax <= 100 ? 1 : sliderMax <= 1000 ? 5 : Math.round(sliderMax / 200) * 5);
   const pct = sliderMax > sliderMin ? ((value - sliderMin) / (sliderMax - sliderMin)) * 100 : 0;
 
@@ -300,7 +300,7 @@ export default function ROICalculator() {
                 value={totalAssets}
                 onChange={setTotalAssets}
                 min={1}
-                max={10000}
+                max={125}
               />
               <InputField
                 label="Maintenance Team Size"
@@ -308,7 +308,7 @@ export default function ROICalculator() {
                 value={maintenanceTechs}
                 onChange={setMaintenanceTechs}
                 min={1}
-                max={500}
+                max={100}
               />
               <InputField
                 label="Average Hourly Labor Rate"
@@ -316,6 +316,7 @@ export default function ROICalculator() {
                 value={avgHourlyRate}
                 onChange={setAvgHourlyRate}
                 prefix="$"
+                max={200}
               />
             </div>
 
@@ -333,6 +334,7 @@ export default function ROICalculator() {
                 value={unplannedDowntimeHrs}
                 onChange={setUnplannedDowntimeHrs}
                 suffix="hrs/mo"
+                max={200}
               />
               <InputField
                 label="Cost per Hour of Downtime"
@@ -340,6 +342,7 @@ export default function ROICalculator() {
                 value={costPerDowntimeHr}
                 onChange={setCostPerDowntimeHr}
                 prefix="$"
+                max={5000}
               />
             </div>
 
@@ -357,6 +360,7 @@ export default function ROICalculator() {
                 value={monthlyMaintenanceBudget}
                 onChange={setMonthlyMaintenanceBudget}
                 prefix="$"
+                max={100000}
               />
               <InputField
                 label="% of Maintenance That Is Reactive"
