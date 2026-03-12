@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
 // ─── Constants ───────────────────────────────────────────────
 const DOWNTIME_REDUCTION = 0.73;
@@ -40,6 +40,11 @@ function InputField({
   const [isFocused, setIsFocused] = useState(false);
   const [localValue, setLocalValue] = useState("");
 
+  const sliderMin = min;
+  const sliderMax = max ?? value * 4;
+  const sliderStep = step ?? (sliderMax <= 100 ? 1 : sliderMax <= 1000 ? 5 : Math.round(sliderMax / 200) * 5);
+  const pct = sliderMax > sliderMin ? ((value - sliderMin) / (sliderMax - sliderMin)) * 100 : 0;
+
   return (
     <div className="mb-[18px] last:mb-0">
       <label className="block text-[0.85rem] font-semibold text-txt mb-1">
@@ -77,6 +82,24 @@ function InputField({
             {suffix}
           </span>
         )}
+      </div>
+      <div className="mt-1.5 px-0.5">
+        <input
+          type="range"
+          min={sliderMin}
+          max={sliderMax}
+          step={sliderStep}
+          value={Math.min(value, sliderMax)}
+          onChange={(e) => onChange(parseFloat(e.target.value))}
+          className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+          style={{
+            background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${pct}%, var(--color-border) ${pct}%, var(--color-border) 100%)`,
+          }}
+        />
+        <div className="flex justify-between text-[0.65rem] text-txt-light mt-0.5">
+          <span>{prefix}{sliderMin.toLocaleString()}{suffix}</span>
+          <span>{prefix}{sliderMax.toLocaleString()}{suffix}</span>
+        </div>
       </div>
     </div>
   );
@@ -136,10 +159,19 @@ export default function ROICalculator() {
     useState(25000);
   const [pctReactive, setPctReactive] = useState(60);
 
-  // Card 4: OptiAM Investment
+  // Enterprise detection
   const isEnterprise = totalAssets >= 100;
   const monthlySubscription = isEnterprise ? 800 : 500;
   const implementationCost = 0;
+  const [showEnterpriseModal, setShowEnterpriseModal] = useState(false);
+  const prevEnterpriseRef = useRef(false);
+
+  useEffect(() => {
+    if (isEnterprise && !prevEnterpriseRef.current) {
+      setShowEnterpriseModal(true);
+    }
+    prevEnterpriseRef.current = isEnterprise;
+  }, [isEnterprise]);
 
   const calc = useMemo(() => {
     // Core
@@ -270,16 +302,6 @@ export default function ROICalculator() {
                 min={1}
                 max={10000}
               />
-              {isEnterprise && (
-                <div className="mb-4 flex items-center gap-2 py-1.5 px-3 bg-primary/10 rounded-lg border border-primary/20">
-                  <span className="text-[0.8rem] font-semibold text-primary">
-                    Enterprise Plan
-                  </span>
-                  <span className="text-[0.7rem] text-txt-light">
-                    100+ assets detected
-                  </span>
-                </div>
-              )}
               <InputField
                 label="Maintenance Team Size"
                 hint="Number of technicians and maintenance staff"
@@ -594,6 +616,34 @@ export default function ROICalculator() {
           </div>
         </div>
       </div>
+
+      {/* Enterprise Modal */}
+      {showEnterpriseModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-txt mb-2">
+              Enterprise Solution
+            </h3>
+            <p className="text-[0.9rem] text-txt-light mb-6 leading-relaxed">
+              With 100+ assets, you qualify for our Enterprise plan with custom pricing and dedicated solutions tailored to your organization.
+            </p>
+            <p className="text-[0.9rem] text-txt font-semibold mb-6">
+              Contact Russell for custom pricing and solutions.
+            </p>
+            <button
+              onClick={() => setShowEnterpriseModal(false)}
+              className="bg-gradient-to-br from-primary to-primary-dark text-white py-3 px-8 rounded-[10px] text-base font-bold shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(15,118,110,0.3)] transition-all cursor-pointer"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
