@@ -137,8 +137,9 @@ export default function ROICalculator() {
   const [pctReactive, setPctReactive] = useState(60);
 
   // Card 4: OptiAM Investment
-  const [monthlySubscription, setMonthlySubscription] = useState(500);
-  const [implementationCost, setImplementationCost] = useState(5000);
+  const isEnterprise = totalAssets >= 100;
+  const monthlySubscription = isEnterprise ? 800 : 500;
+  const implementationCost = 0;
 
   const calc = useMemo(() => {
     // Core
@@ -218,8 +219,7 @@ export default function ROICalculator() {
     costPerDowntimeHr,
     monthlyMaintenanceBudget,
     pctReactive,
-    monthlySubscription,
-    implementationCost,
+    isEnterprise,
   ]);
 
   // Payback display
@@ -270,6 +270,16 @@ export default function ROICalculator() {
                 min={1}
                 max={10000}
               />
+              {isEnterprise && (
+                <div className="mb-4 flex items-center gap-2 py-1.5 px-3 bg-primary/10 rounded-lg border border-primary/20">
+                  <span className="text-[0.8rem] font-semibold text-primary">
+                    Enterprise Plan
+                  </span>
+                  <span className="text-[0.7rem] text-txt-light">
+                    100+ assets detected
+                  </span>
+                </div>
+              )}
               <InputField
                 label="Maintenance Team Size"
                 hint="Number of technicians and maintenance staff"
@@ -337,29 +347,6 @@ export default function ROICalculator() {
               />
             </div>
 
-            {/* Card 4 */}
-            <div className="bg-card rounded-[14px] shadow-[0_2px_12px_rgba(0,0,0,0.08)] p-7">
-              <h2 className="text-[1.1rem] font-bold text-primary mb-5 flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-blue-bg flex items-center justify-center text-sm shrink-0">
-                  4
-                </span>
-                OptiAM Investment
-              </h2>
-              <InputField
-                label="OptiAM Monthly Subscription"
-                hint="Monthly licensing cost for OptiAM"
-                value={monthlySubscription}
-                onChange={setMonthlySubscription}
-                prefix="$"
-              />
-              <InputField
-                label="Implementation &amp; Training Cost"
-                hint="One-time setup, data migration, and training cost"
-                value={implementationCost}
-                onChange={setImplementationCost}
-                prefix="$"
-              />
-            </div>
           </div>
 
           {/* ─── RIGHT: Results Panel ─── */}
@@ -398,12 +385,6 @@ export default function ROICalculator() {
                   large
                 />
               </div>
-
-              <ResultRow
-                label="OptiAM Subscription"
-                value={"-" + fmt(monthlySubscription)}
-                type="cost"
-              />
 
               {/* Dashed divider */}
               <div className="border-t-2 border-dashed border-border mt-3 pt-3">
