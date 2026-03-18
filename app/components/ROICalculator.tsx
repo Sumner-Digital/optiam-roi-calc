@@ -8,6 +8,36 @@ const EMERGENCY_COST_MULTIPLIER = 3;
 const ADMIN_TIME_SAVED_PER_TECH_PER_DAY = 1;
 const WORKING_DAYS_PER_MONTH = 21;
 
+const B2B_INDUSTRIES = [
+  "Manufacturing",
+  "Food & Beverage Manufacturing",
+  "Energy & Utilities",
+  "Government & Public Works",
+  "School & Higher Education",
+  "Farming/Agriculture",
+  "Restaurants & Breweries",
+  "Healthcare",
+  "Facilities",
+  "Property Management",
+  "Landscaping",
+  "Fisheries",
+  "Car Services & Fleets",
+] as const;
+
+const ENTERPRISE_INDUSTRIES = [
+  "Aerospace",
+  "Aircraft Rescue and Fire Fighting",
+  "Data Centers",
+  "Land Vehicles",
+  "Manufacturing (Enterprise)",
+  "Maritime Vessels",
+  "Mining",
+  "Military Systems",
+  "Mission Critical Facilities",
+  "Power Generation",
+  "Other",
+] as const;
+
 // ─── Helpers ─────────────────────────────────────────────────
 function fmt(value: number): string {
   return "$" + Math.round(value).toLocaleString("en-US");
@@ -98,7 +128,7 @@ function InputField({
         />
         <div className="flex justify-between text-[0.65rem] text-txt-light mt-0.5">
           <span>{prefix}{sliderMin.toLocaleString()}{suffix}</span>
-          <span>{prefix}{sliderMax.toLocaleString()}{suffix}</span>
+          <span>{prefix}{sliderMax.toLocaleString()}{suffix !== "%" && "+"}{suffix}</span>
         </div>
       </div>
     </div>
@@ -159,8 +189,9 @@ export default function ROICalculator() {
     useState(25000);
   const [pctReactive, setPctReactive] = useState(60);
 
-  // Enterprise detection
-  const isEnterprise = totalAssets >= 100;
+  // Industry selection
+  const [selectedIndustry, setSelectedIndustry] = useState("");
+  const isEnterprise = (ENTERPRISE_INDUSTRIES as readonly string[]).includes(selectedIndustry);
   const monthlySubscription = isEnterprise ? 800 : 500;
   const implementationCost = 0;
   const [showEnterpriseModal, setShowEnterpriseModal] = useState(false);
@@ -174,17 +205,20 @@ export default function ROICalculator() {
   }, [isEnterprise]);
 
   const calc = useMemo(() => {
+    // Asset scaling factor (normalized to default of 50 assets)
+    const assetFactor = totalAssets / 50;
+
     // Core
     const reactiveSpend = monthlyMaintenanceBudget * (pctReactive / 100);
 
-    // Downtime savings
+    // Downtime savings (scaled by assets)
     const downtimeHoursSaved = unplannedDowntimeHrs * DOWNTIME_REDUCTION;
-    const monthlyDowntimeSavings = downtimeHoursSaved * costPerDowntimeHr;
+    const monthlyDowntimeSavings = downtimeHoursSaved * costPerDowntimeHr * assetFactor;
 
-    // Maintenance efficiency savings
+    // Maintenance efficiency savings (scaled by assets)
     const reactiveReduction = reactiveSpend * DOWNTIME_REDUCTION;
     const maintenanceSavings =
-      reactiveReduction * (1 - 1 / EMERGENCY_COST_MULTIPLIER);
+      reactiveReduction * (1 - 1 / EMERGENCY_COST_MULTIPLIER) * assetFactor;
 
     // Labor efficiency
     const laborHoursSaved =
@@ -286,6 +320,41 @@ export default function ROICalculator() {
         <div className="grid grid-cols-2 gap-7 items-start max-md:grid-cols-1">
           {/* ─── LEFT: Input Cards ─── */}
           <div>
+            {/* Industry Selection */}
+            <div className="bg-card rounded-[14px] shadow-[0_2px_12px_rgba(0,0,0,0.08)] p-7 mb-5">
+              <h2 className="text-[1.1rem] font-bold text-primary mb-5 flex items-center gap-2">
+                <span className="w-7 h-7 rounded-lg bg-blue-bg flex items-center justify-center text-sm shrink-0">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </span>
+                Select Your Industry
+              </h2>
+              <label className="block text-[0.85rem] font-semibold text-txt mb-1">
+                Industry
+              </label>
+              <p className="text-[0.75rem] text-txt-light mb-1.5">
+                Your industry determines the solution tier
+              </p>
+              <select
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                className="w-full py-2.5 px-3 border-2 border-border rounded-lg text-base font-medium text-txt transition-colors outline-none focus:border-primary bg-card cursor-pointer"
+              >
+                <option value="">— Select an industry —</option>
+                <optgroup label="B2B / Commercial">
+                  {B2B_INDUSTRIES.map((ind) => (
+                    <option key={ind} value={ind}>{ind}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Enterprise">
+                  {ENTERPRISE_INDUSTRIES.map((ind) => (
+                    <option key={ind} value={ind}>{ind}</option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
+
             {/* Card 1 */}
             <div className="bg-card rounded-[14px] shadow-[0_2px_12px_rgba(0,0,0,0.08)] p-7 mb-5">
               <h2 className="text-[1.1rem] font-bold text-primary mb-5 flex items-center gap-2">
@@ -296,7 +365,7 @@ export default function ROICalculator() {
               </h2>
               <InputField
                 label="Number of Assets Managed"
-                hint="Equipment, vehicles, facilities, or any assets requiring maintenance"
+                hint="Equipment, vehicles, facilities — more assets = greater savings from predictive maintenance"
                 value={totalAssets}
                 onChange={setTotalAssets}
                 min={1}
@@ -634,7 +703,7 @@ export default function ROICalculator() {
               Enterprise Solution
             </h3>
             <p className="text-[0.9rem] text-txt-light mb-6 leading-relaxed">
-              With 100+ assets, you qualify for our Enterprise plan with custom pricing and dedicated solutions tailored to your organization.
+              Your industry requires our Enterprise tier with custom pricing and dedicated solutions tailored to your organization.
             </p>
             <p className="text-[0.9rem] text-txt font-semibold mb-6">
               Contact Russell for custom pricing and solutions.
