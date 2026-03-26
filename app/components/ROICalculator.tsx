@@ -196,6 +196,21 @@ export default function ROICalculator() {
   const implementationCost = 0;
   const [showEnterpriseModal, setShowEnterpriseModal] = useState(false);
   const prevEnterpriseRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Send height to parent window for iframe auto-resize
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      window.parent.postMessage(
+        { type: "optiam-roi-resize", height: el.scrollHeight },
+        "*"
+      );
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     if (isEnterprise && !prevEnterpriseRef.current) {
@@ -302,7 +317,7 @@ export default function ROICalculator() {
       : "0%";
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div ref={containerRef} className="min-h-screen bg-surface">
       {/* ─── Hero Banner ─── */}
       <div className="bg-gradient-to-br from-primary to-primary-dark py-12 px-6 text-center">
         <h1 className="text-[2.2rem] max-md:text-[1.6rem] font-bold text-white tracking-tight">
