@@ -124,6 +124,7 @@ function InputField({
           className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
           style={{
             background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${pct}%, var(--color-border) ${pct}%, var(--color-border) 100%)`,
+            touchAction: "none",
           }}
         />
         <div className="flex justify-between text-[0.65rem] text-txt-light mt-0.5">
