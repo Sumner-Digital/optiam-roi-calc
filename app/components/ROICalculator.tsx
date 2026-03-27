@@ -708,7 +708,7 @@ export default function ROICalculator() {
 
       {/* Enterprise Modal */}
       {showEnterpriseModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 px-4 pt-24">
           <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative">
             <button
               onClick={() => setShowEnterpriseModal(false)}
