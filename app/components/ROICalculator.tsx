@@ -709,7 +709,15 @@ export default function ROICalculator() {
       {/* Enterprise Modal */}
       {showEnterpriseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+          <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative">
+            <button
+              onClick={() => setShowEnterpriseModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-txt-light hover:bg-border/50 hover:text-txt transition-colors cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <svg className="w-7 h-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -724,12 +732,22 @@ export default function ROICalculator() {
             <p className="text-[0.9rem] text-txt font-semibold mb-6">
               Contact Russell for custom pricing and solutions.
             </p>
-            <button
-              onClick={() => setShowEnterpriseModal(false)}
-              className="bg-gradient-to-br from-primary to-primary-dark text-white py-3 px-8 rounded-[10px] text-base font-bold shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(15,118,110,0.3)] transition-all cursor-pointer"
-            >
-              Got it
-            </button>
+            <div className="flex gap-3 justify-center max-md:flex-col">
+              <a
+                href="https://optiamgo.com/enterprise-schedule/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gradient-to-br from-primary to-primary-dark text-white py-3 px-8 rounded-[10px] text-base font-bold shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(15,118,110,0.3)] transition-all cursor-pointer no-underline"
+              >
+                Schedule a Consultation
+              </a>
+              <button
+                onClick={() => setShowEnterpriseModal(false)}
+                className="border-2 border-primary text-primary py-3 px-8 rounded-[10px] text-base font-bold hover:bg-primary hover:text-white transition-all cursor-pointer"
+              >
+                Got it
+              </button>
+            </div>
           </div>
         </div>
       )}
