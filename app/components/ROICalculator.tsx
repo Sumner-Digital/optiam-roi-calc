@@ -542,6 +542,16 @@ export default function ROICalculator() {
                 </p>
               </div>
             </div>
+
+            {/* Schedule CTA */}
+            <a
+              href="https://optiamgo.com/schedule/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full mt-4 bg-gradient-to-br from-primary to-primary-dark text-white py-3.5 rounded-[10px] text-base font-bold text-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(15,118,110,0.3)] transition-all cursor-pointer no-underline"
+            >
+              Schedule a Demo
+            </a>
           </div>
         </div>
 
@@ -690,20 +700,6 @@ export default function ROICalculator() {
           </ul>
         </div>
 
-        {/* ─── CTA ─── */}
-        <div className="text-center mt-12">
-          <p className="text-base text-txt-light mb-4">
-            Ready to transform reactive maintenance into predictive excellence?
-          </p>
-          <div className="flex justify-center gap-3 max-md:flex-col max-md:items-center">
-            <button className="inline-block bg-gradient-to-br from-primary to-primary-dark text-white py-3.5 px-9 rounded-[10px] text-base font-bold shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(15,118,110,0.3)] transition-all cursor-pointer">
-              Schedule a Demo
-            </button>
-            <button className="inline-block border-2 border-primary text-primary py-3.5 px-9 rounded-[10px] text-base font-bold hover:bg-primary hover:text-white transition-all cursor-pointer">
-              Start Free Trial
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Enterprise Modal */}
