@@ -545,7 +545,7 @@ export default function ROICalculator() {
 
             {/* Schedule CTA */}
             <a
-              href="https://optiamgo.com/schedule/"
+              href={isEnterprise ? "https://optiamgo.com/enterprise-schedule/" : "https://optiamgo.com/schedule/"}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full mt-4 bg-gradient-to-br from-primary to-primary-dark text-white py-3.5 rounded-[10px] text-base font-bold text-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(15,118,110,0.3)] transition-all cursor-pointer no-underline"
